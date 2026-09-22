@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b1020" />
+  <title>MoodTune AI — Personalized Music Recommendation</title>
+  <meta name="description" content="AI-powered personalized music recommendation prototype based on emotional state." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="bg-orb orb-1"></div><div class="bg-orb orb-2"></div>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">♪</span><span>MoodTune <b>AI</b></span></div>
+    <span class="prototype-pill">LIVE PROTOTYPE</span>
+    <a class="github-link" href="https://github.com/" target="_blank" rel="noreferrer">GitHub ↗</a>
+  </header>
+  <main class="container">
+    <section class="hero"><div>
+      <span class="eyebrow">AI-POWERED PERSONALIZED MUSIC</span>
+      <h1>Music that understands<br><span>how you feel.</span></h1>
+      <p>Detect a mood signal, fuse it with your input, and generate a personalized playlist. This browser prototype demonstrates the complete recommendation flow from signal → emotion → playlist.</p>
+      <div class="hero-actions"><button class="primary" onclick="document.getElementById('detect').scrollIntoView({behavior:'smooth'})">Start mood scan</button><button class="ghost" onclick="document.getElementById('architecture').scrollIntoView({behavior:'smooth'})">View architecture</button></div>
+    </div><div class="hero-card"><div class="pulse"></div><div class="mini-label">CURRENT MOOD</div><div id="heroMood" class="hero-mood">Ready to scan</div><div id="heroConfidence" class="confidence">Waiting for signal</div></div></section>
+    <section id="detect" class="section"><div class="section-heading"><div><span class="eyebrow">01 · EMOTION DETECTION</span><h2>Give the system a signal</h2></div><span class="status-dot"><i></i> Browser demo mode</span></div>
+      <div class="grid-2"><div class="panel"><div class="panel-head"><h3>Camera signal</h3><span>Face input</span></div><div class="camera"><video id="video" autoplay muted playsinline></video><div id="cameraPlaceholder" class="camera-placeholder"><div class="camera-icon">◉</div><strong>Camera is off</strong><small>Allow camera access to preview the face-input stage.</small></div><div class="scan-line"></div></div><div class="button-row"><button id="cameraBtn" class="secondary">Enable camera</button><button id="scanBtn" class="primary" disabled>Analyze signal</button></div><p class="hint">Privacy: the prototype keeps the camera stream in your browser and does not upload it.</p></div>
+      <div class="panel"><div class="panel-head"><h3>Emotion fusion</h3><span>Multimodal input</span></div><label class="field-label">How are you feeling right now?</label><div class="moods" id="moodButtons"><button data-mood="Happy">😊 Happy</button><button data-mood="Calm">😌 Calm</button><button data-mood="Sad">😔 Sad</button><button data-mood="Energetic">⚡ Energetic</button><button data-mood="Stressed">😣 Stressed</button><button data-mood="Romantic">💗 Romantic</button></div><label class="field-label" for="textInput">Optional text / journal input</label><textarea id="textInput" placeholder="e.g. I had a long day, I need something peaceful..."></textarea><button id="textAnalyze" class="full secondary">Analyze text sentiment</button><div class="fusion-box"><div><span>Detected emotion</span><strong id="detectedMood">—</strong></div><div><span>Confidence</span><strong id="confidence">—</strong></div></div></div></div>
+    </section>
+    <section id="recommendations" class="section"><div class="section-heading"><div><span class="eyebrow">02 · RECOMMENDATION ENGINE</span><h2>Your personalized playlist</h2></div><span id="playlistTag" class="tag">Select a mood</span></div><div id="tracks" class="tracks"></div></section>
+    <section id="architecture" class="section"><div class="section-heading"><div><span class="eyebrow">03 · SYSTEM ARCHITECTURE</span><h2>From raw signal to recommended song</h2></div></div><div class="architecture"><div class="arch-card"><div class="arch-num">01</div><h3>Data Input</h3><p>Face, voice & text signals captured from the user device.</p></div><div class="arrow">→</div><div class="arch-card"><div class="arch-num">02</div><h3>Emotion Detection</h3><p>CNN/LSTM-style multimodal classification layer.</p></div><div class="arrow">→</div><div class="arch-card"><div class="arch-num">03</div><h3>Recommendation</h3><p>Emotion mapped to music features and user profile.</p></div><div class="arrow">→</div><div class="arch-card"><div class="arch-num">04</div><h3>Playlist</h3><p>Ranked tracks delivered through a music API.</p></div></div></section>
+    <section class="section demo-note"><div class="note"><strong>Prototype note</strong><p>The current GitHub-ready demo uses browser camera preview, user-selected emotion and lightweight text sentiment to demonstrate the end-to-end UX. The presentation architecture specifies CNN/LSTM models, FER-2013/RAVDESS, Spotify Web API and cloud deployment for the production version.</p></div></section>
+  </main>
+  <footer>GNIOT · Group 20 · AI-Powered Personalized Music Recommendation System</footer>
+  <script src="app.js"></script>
+</body></html>
