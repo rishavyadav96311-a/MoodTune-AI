@@ -12,7 +12,7 @@ function yt(title,artist){return "https://www.youtube.com/results?search_query="
 function render(m){
  currentMood=m;
  const list=tracks[m].filter(t=>currentFilter==="all"||t[3]===currentFilter);
- $("tracks").innerHTML=list.map(t=>'<div class="track"><div class="cover">'+t[2]+'</div><div><h4>'+t[0]+'</h4><p>'+t[1]+'</p><span class="lang">'+(t[3]==="hindi"?"Hindi / Bollywood":t[3]==="bhojpuri"?"Bhojpuri":"English")+'</span></div><a class="play" title="Play on YouTube" target="_blank" rel="noopener noreferrer" href="${yt(t[0],t[1])}">▶</a></div>').join("");
+ $("tracks").innerHTML=list.map(t=>'<div class="track"><div class="cover">'+t[2]+'</div><div><h4>'+t[0]+'</h4><p>'+t[1]+'</p><span class="lang">'+(t[3]==="hindi"?"Hindi / Bollywood":t[3]==="bhojpuri"?"Bhojpuri":"English")+'</span></div><a class="play" title="Play on YouTube" target="_blank" rel="noopener noreferrer" href="' + yt(t[0],t[1]) + '">▶</a></div>').join("");
 }
 function mood(m,c=92,s="manual"){document.querySelectorAll(".moods button").forEach(b=>b.classList.toggle("active",b.dataset.mood===m));$("detectedMood").textContent=m;$("confidence").textContent=c+"%";$("heroMood").textContent=m;$("heroConfidence").textContent=c+"% confidence · "+s;$("playlistTag").textContent=m+" mood";render(m);$("recommendations").scrollIntoView({behavior:"smooth"})}
 document.querySelectorAll(".moods button").forEach(b=>b.onclick=()=>mood(b.dataset.mood,96,"user input"));
