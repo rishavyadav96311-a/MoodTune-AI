@@ -1,5 +1,1 @@
-# gcc coverage testing tool files
-
-*.gcno
-*.gcda
-*.gcov
+node_modules/\n.env\n.DS_Store\n.vscode/\n
