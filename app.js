@@ -32,13 +32,14 @@
     loadTracks();
   }
   function trackCard(track) {
-    return '<article class="track"><img class="cover album-cover" src="' + esc(track.image || "") + '" alt="" onerror="this.style.display=\'none\'"><div class="track-info"><h4>' + esc(track.title) + '</h4><p>' + esc(track.artist) + '</p><span class="lang">' + esc(track.provider || "Independent") + (track.license ? ' · <a href="' + esc(track.license) + '" target="_blank" rel="noopener">license</a>' : "") + '</span></div><button class="play" data-play="' + esc(track.id) + '" aria-label="Play ' + esc(track.title) + '">▶</button><button class="like-button" data-like="' + esc(track.id) + '" aria-label="Like ' + esc(track.title) + '">♡</button></article>';
+    return '<article class="track"><img class="cover album-cover" src="' + esc(track.image || "") + '" alt="" onerror="this.style.display=\\'none\\'"><div class="track-info"><h4>' + esc(track.title) + '</h4><p>' + esc(track.artist) + '</p><span class="lang">' + esc(track.provider || "Independent") + (track.license ? ' · <a href="' + esc(track.license) + '" target="_blank" rel="noopener">license</a>' : "") + '</span></div><button class="play" data-play="' + esc(track.id) + '" aria-label="Play ' + esc(track.title) + '">▶</button><button class="like-button" data-like="' + esc(track.id) + '" aria-label="Like ' + esc(track.title) + '">♡</button><button class="add-button" data-add="' + esc(track.id) + '" aria-label="Add to playlist">＋</button></article>';
   }
   function renderTracks() {
     const list = $("tracks");
     list.innerHTML = state.tracks.length ? state.tracks.map(trackCard).join("") : '<div class="empty-state">No tracks loaded yet. Check backend configuration or try another search.</div>';
     list.querySelectorAll("[data-play]").forEach((button) => button.addEventListener("click", () => playTrack(button.dataset.play)));
     list.querySelectorAll("[data-like]").forEach((button) => button.addEventListener("click", () => likeTrack(button.dataset.like)));
+    list.querySelectorAll("[data-add]").forEach((button) => button.addEventListener("click", () => addTrackToPlaylist(button.dataset.add)));
   }
   async function loadTracks(search = "") {
     $("catalogMessage").textContent = "Loading independent music…";
@@ -112,13 +113,31 @@
     state.playlistId = id; renderTracks(); $("discover").scrollIntoView({ behavior: "smooth" });
     $("catalogMessage").textContent = "Playlist loaded · " + state.tracks.length + " tracks";
   }
+  async function addTrackToPlaylist(id) {
+    if (!(await requireUser())) return;
+    const track = state.tracks.find((item) => String(item.id) === String(id));
+    if (!track) return;
+    const { data: playlists, error: listError } = await db.from("playlists").select("id,name").eq("user_id", state.user.id).order("created_at", { ascending: false });
+    if (listError) return toast(listError.message);
+    if (!playlists?.length) { toast("Create a playlist first."); return; }
+    const selection = prompt("Add to which playlist?\n" + playlists.map((p, i) => (i + 1) + ". " + p.name).join("\n") + "\n\nEnter a number:");
+    const index = Number(selection) - 1;
+    if (!selection || !Number.isInteger(index) || index < 0 || index >= playlists.length) return;
+    const { error } = await db.from("playlist_tracks").upsert({
+      playlist_id: playlists[index].id, user_id: state.user.id, provider_track_id: String(track.id),
+      title: track.title, artist: track.artist, audio_url: track.audio, image_url: track.image || null,
+      provider: track.provider || "Jamendo", license_url: track.license || null
+    }, { onConflict: "playlist_id,provider_track_id" });
+    if (error) return toast(error.message);
+    toast("Added to " + playlists[index].name); loadLibrary();
+  }
   async function createPlaylist() {
     if (!(await requireUser())) return;
     const name = prompt("Name your playlist:");
     if (!name || !name.trim()) return;
     const { error } = await db.from("playlists").insert({ user_id: state.user.id, name: name.trim().slice(0, 80), mood: state.mood });
     if (error) return toast(error.message);
-    toast("Playlist created. Add a track from its like/save options soon."); loadLibrary();
+    toast("Playlist created. Use ＋ on any track to add it."); loadLibrary();
   }
   async function authSubmit(event) {
     event.preventDefault();
