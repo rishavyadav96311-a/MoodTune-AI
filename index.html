@@ -3,36 +3,68 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#0b1020" />
-  <title>MoodTune AI — Personalized Music Recommendation</title>
-  <meta name="description" content="AI-powered personalized music recommendation prototype based on emotional state." />
+  <meta name="theme-color" content="#080b14" />
+  <title>MoodTune AI — Music for your mood</title>
+  <meta name="description" content="Discover independent music and personalized recommendations powered by emotion AI." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
 </head>
 <body>
-  <div class="bg-orb orb-1"></div><div class="bg-orb orb-2"></div>
   <header class="topbar">
     <div class="brand"><span class="brand-mark">♪</span><span>MoodTune <b>AI</b></span></div>
-    <span class="prototype-pill">LIVE PROTOTYPE</span>
-    <a class="github-link" href="https://github.com/rishavyadav96311-a/MoodTune-AI" target="_blank" rel="noreferrer">GitHub ↗</a>
+    <span id="connectionStatus" class="prototype-pill">CONNECTING</span>
+    <button id="accountButton" class="secondary">Sign in</button>
   </header>
   <main class="container">
     <section class="hero"><div>
-      <span class="eyebrow">AI-POWERED PERSONALIZED MUSIC</span>
-      <h1>Music that understands<br><span>how you feel.</span></h1>
-      <p>Detect a mood signal, fuse it with your input, and generate a personalized playlist. This browser prototype demonstrates the complete recommendation flow from signal → emotion → playlist.</p>
-      <div class="hero-actions"><button class="primary" onclick="document.getElementById('detect').scrollIntoView({behavior:'smooth'})">Start mood scan</button><button class="ghost" onclick="document.getElementById('architecture').scrollIntoView({behavior:'smooth'})">View architecture</button></div>
-    </div><div class="hero-card"><div class="pulse"></div><div class="mini-label">CURRENT MOOD</div><div id="heroMood" class="hero-mood">Ready to scan</div><div id="heroConfidence" class="confidence">Waiting for signal</div></div></section>
-    <section id="detect" class="section"><div class="section-heading"><div><span class="eyebrow">01 · EMOTION DETECTION</span><h2>Give the system a signal</h2></div><span class="status-dot"><i></i> Browser demo mode</span></div>
-      <div class="grid-2"><div class="panel"><div class="panel-head"><h3>Camera signal</h3><span>Face input</span></div><div class="camera"><video id="video" autoplay muted playsinline></video><div id="cameraPlaceholder" class="camera-placeholder"><div class="camera-icon">◉</div><strong>Camera is off</strong><small>Allow camera access to preview the face-input stage.</small></div><div class="scan-line"></div></div><div class="button-row"><button id="cameraBtn" class="secondary">Enable camera</button><button id="scanBtn" class="primary" disabled>Analyze signal</button></div><p class="hint">Privacy: the prototype keeps the camera stream in your browser and does not upload it.</p></div>
-      <div class="panel"><div class="panel-head"><h3>Emotion fusion</h3><span>Multimodal input</span></div><label class="field-label">How are you feeling right now?</label><div class="moods" id="moodButtons"><button data-mood="Happy">😊 Happy</button><button data-mood="Calm">😌 Calm</button><button data-mood="Sad">😔 Sad</button><button data-mood="Energetic">⚡ Energetic</button><button data-mood="Stressed">😣 Stressed</button><button data-mood="Romantic">💗 Romantic</button></div><label class="field-label" for="textInput">Optional text / journal input</label><textarea id="textInput" placeholder="e.g. I had a long day, I need something peaceful..."></textarea><button id="textAnalyze" class="full secondary">Analyze text sentiment</button><div class="fusion-box"><div><span>Detected emotion</span><strong id="detectedMood">—</strong></div><div><span>Confidence</span><strong id="confidence">—</strong></div></div></div></div>
+      <span class="eyebrow">MUSIC THAT MEETS YOUR MOMENT</span>
+      <h1>Find your feeling.<br><span>Find your sound.</span></h1>
+      <p>Explore independent music, get model-powered text emotion analysis, and build playlists around the way you feel.</p>
+      <div class="hero-actions"><button class="primary" onclick="document.getElementById('discover').scrollIntoView({behavior:'smooth'})">Discover music ↘</button><button class="ghost" onclick="document.getElementById('moodStudio').scrollIntoView({behavior:'smooth'})">Analyze my mood</button></div>
+    </div><div class="hero-card"><div class="pulse"></div><div class="mini-label">YOUR CURRENT VIBE</div><div id="heroMood" class="hero-mood">Ready when you are</div><div id="heroConfidence" class="confidence">Choose a mood or analyze text</div><p id="modelStatus" class="hint">AI service connection pending</p></div></section>
+
+    <section id="moodStudio" class="section"><div class="section-heading"><div><span class="eyebrow">01 · MOOD STUDIO</span><h2>What's your headspace?</h2></div><span class="status-dot"><i></i> You stay in control</span></div>
+      <div class="grid-2">
+        <div class="panel"><div class="panel-head"><h3>Choose your vibe</h3><span>Instant recommendations</span></div>
+          <div class="moods"><button data-mood="Happy">😊 Happy</button><button data-mood="Calm" class="active">😌 Calm</button><button data-mood="Sad">😔 Sad</button><button data-mood="Energetic">⚡ Energetic</button><button data-mood="Stressed">😣 Stressed</button><button data-mood="Romantic">💗 Romantic</button></div>
+          <label class="field-label" for="textInput">Or tell MoodTune how you're feeling</label>
+          <textarea id="textInput" placeholder="e.g. Long day, too many deadlines. I need to breathe..."></textarea>
+          <button id="textAnalyze" class="full primary">Analyze with AI ✦</button>
+          <div class="fusion-box"><div><span>Detected mood</span><strong id="detectedMood">Calm</strong></div><div><span>Model confidence</span><strong id="confidence">—</strong></div></div>
+          <p class="hint">Text is sent to your configured AI backend for analysis. Avoid entering sensitive personal information.</p>
+        </div>
+        <div class="panel"><div class="panel-head"><h3>Camera input</h3><span>Optional · local preview</span></div>
+          <div class="camera"><video id="video" autoplay muted playsinline></video><div id="cameraPlaceholder" class="camera-placeholder"><div class="camera-icon">◉</div><strong>Camera is off</strong><small>Preview stays in this browser; it is not analyzed by the AI yet.</small></div></div>
+          <div class="button-row"><button id="cameraBtn" class="secondary">Enable camera</button><button id="scanBtn" class="ghost" disabled>Not available yet</button></div>
+          <p class="hint">We do not pretend a camera preview is emotion detection. Facial emotion analysis will be enabled only after a trained vision model is configured.</p>
+          <div class="note" style="margin-top:18px"><strong>Built for privacy</strong><p>Camera access is optional. Stop it any time. MoodTune does not upload camera frames in this version.</p></div>
+        </div>
+      </div>
     </section>
-    <section id="recommendations" class="section"><div class="section-heading"><div><span class="eyebrow">02 · RECOMMENDATION ENGINE</span><h2>Your personalized playlist</h2></div><span id="playlistTag" class="tag">Select a mood</span></div><div class="language-filter" id="languageFilter"><button class="filter active" data-filter="all">All</button><button class="filter" data-filter="hindi">🇮🇳 Hindi</button><button class="filter" data-filter="bhojpuri">🧡 Bhojpuri</button><button class="filter" data-filter="english">🇬🇧 English</button></div><div id="tracks" class="tracks"></div></section>
-    <section id="architecture" class="section"><div class="section-heading"><div><span class="eyebrow">03 · SYSTEM ARCHITECTURE</span><h2>From raw signal to recommended song</h2></div></div><div class="architecture"><div class="arch-card"><div class="arch-num">01</div><h3>Data Input</h3><p>Face, voice & text signals captured from the user device.</p></div><div class="arrow">→</div><div class="arch-card"><div class="arch-num">02</div><h3>Emotion Detection</h3><p>CNN/LSTM-style multimodal classification layer.</p></div><div class="arrow">→</div><div class="arch-card"><div class="arch-num">03</div><h3>Recommendation</h3><p>Emotion mapped to music features and user profile.</p></div><div class="arrow">→</div><div class="arch-card"><div class="arch-num">04</div><h3>Playlist</h3><p>Ranked tracks delivered through a music API.</p></div></div></section>
-    <section class="section demo-note"><div class="note"><strong>Prototype note</strong><p>The current GitHub-ready demo uses browser camera preview, user-selected emotion and lightweight text sentiment to demonstrate the end-to-end UX. The presentation architecture specifies CNN/LSTM models, FER-2013/RAVDESS, Spotify Web API and cloud deployment for the production version.</p></div></section>
+
+    <section id="discover" class="section"><div class="section-heading"><div><span class="eyebrow">02 · DISCOVER</span><h2>Music for this mood</h2></div><span id="playlistTag" class="tag">Calm mood</span></div>
+      <div class="search-row"><input id="musicSearch" placeholder="Search independent artists or tracks..." aria-label="Search music"><button id="searchButton" class="secondary">Search</button><button id="refreshButton" class="ghost">For my mood ↻</button></div>
+      <div class="language-filter"><button class="filter active" data-filter="all">All sounds</button><button class="filter" data-filter="hindi">Hindi search</button><button class="filter" data-filter="bhojpuri">Bhojpuri search</button><button class="filter" data-filter="english">English search</button></div>
+      <p id="catalogMessage" class="hint">Connect the backend and music provider to load playable tracks.</p>
+      <div id="tracks" class="tracks"></div>
+    </section>
+
+    <section id="library" class="section"><div class="section-heading"><div><span class="eyebrow">03 · YOUR COLLECTION</span><h2>Library & playlists</h2></div><button id="createPlaylist" class="secondary">＋ New playlist</button></div>
+      <div class="grid-2"><div class="panel"><div class="panel-head"><h3>Liked tracks</h3><span>Saved to your account</span></div><div id="likedTracks" class="saved-list"><p class="hint">Sign in to sync your liked music.</p></div></div>
+      <div class="panel"><div class="panel-head"><h3>Your playlists</h3><span>Private to your account</span></div><div id="userPlaylists" class="saved-list"><p class="hint">Sign in to create and save playlists.</p></div></div></div>
+    </section>
+
+    <section class="section"><div class="note"><strong>About the music catalog</strong><p>Music comes from the configured independent-music provider, not from copied commercial MP3s. Track availability, playback and permitted uses depend on the provider's current terms and each track's license. Commercial Bollywood/Bhojpuri catalog licensing is a separate integration.</p></div></section>
   </main>
-  <footer>GNIOT · Group 20 · AI-Powered Personalized Music Recommendation System</footer>
+  <div id="playerBar" class="player-bar"><div class="player-track"><div id="playerCover" class="cover">♪</div><div><strong id="playerTitle">Choose a track</strong><p id="playerArtist">Independent music catalog</p></div></div><audio id="audioPlayer" controls preload="none"></audio><button id="playerLike" class="ghost" title="Like current track">♡</button></div>
+
+  <dialog id="authDialog" class="auth-dialog"><form id="authForm"><button type="button" id="closeAuth" class="dialog-close" aria-label="Close">×</button><span class="eyebrow">YOUR MOOD, YOUR MUSIC</span><h2 id="authTitle">Welcome to MoodTune</h2><p class="hint">Sign in to sync liked tracks and playlists across devices.</p><label class="field-label" for="authEmail">Email</label><input id="authEmail" type="email" autocomplete="email" required placeholder="you@example.com"><label class="field-label" for="authPassword">Password</label><input id="authPassword" type="password" autocomplete="current-password" minlength="6" required placeholder="At least 6 characters"><label id="displayNameLabel" class="field-label" for="displayName" hidden>Display name</label><input id="displayName" hidden placeholder="What should we call you?"><button id="authSubmit" class="primary full" type="submit">Sign in</button><button id="toggleAuthMode" class="ghost full" type="button">New here? Create account</button><p id="authMessage" role="status" class="hint"></p></form></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <footer>MOODTUNE AI · Independent music discovery · Built with care</footer>
   <script src="app.js"></script>
-</body></html>
+</body>
+</html>
