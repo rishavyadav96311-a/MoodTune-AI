@@ -32,7 +32,7 @@
     loadTracks();
   }
   function trackCard(track) {
-    return '<article class="track"><img class="cover album-cover" src="' + esc(track.image || "") + '" alt="" onerror="this.style.display=\\'none\\'"><div class="track-info"><h4>' + esc(track.title) + '</h4><p>' + esc(track.artist) + '</p><span class="lang">' + esc(track.provider || "Independent") + (track.license ? ' · <a href="' + esc(track.license) + '" target="_blank" rel="noopener">license</a>' : "") + '</span></div><button class="play" data-play="' + esc(track.id) + '" aria-label="Play ' + esc(track.title) + '">▶</button><button class="like-button" data-like="' + esc(track.id) + '" aria-label="Like ' + esc(track.title) + '">♡</button><button class="add-button" data-add="' + esc(track.id) + '" aria-label="Add to playlist">＋</button></article>';
+    return '<article class="track"><img class="cover album-cover" src="' + esc(track.image || "") + '" alt=""><div class="track-info"><h4>' + esc(track.title) + '</h4><p>' + esc(track.artist) + '</p><span class="lang">' + esc(track.provider || "Independent") + (track.license ? ' · <a href="' + esc(track.license) + '" target="_blank" rel="noopener">license</a>' : "") + '</span></div><button class="play" data-play="' + esc(track.id) + '" aria-label="Play ' + esc(track.title) + '">▶</button><button class="like-button" data-like="' + esc(track.id) + '" aria-label="Like ' + esc(track.title) + '">♡</button><button class="add-button" data-add="' + esc(track.id) + '" aria-label="Add to playlist">＋</button></article>';
   }
   function renderTracks() {
     const list = $("tracks");
